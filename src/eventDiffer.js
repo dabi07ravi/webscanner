@@ -25,21 +25,20 @@ module.exports = compareEvents;
 
 
 
-// const compareEvents = require('./utils/eventDiffer');
 
-// // Example data
-// const oldEventData = {
-//     eventName: 'Tech Conference 2023',
-//     eventURL: 'https://tech-conference-2023.com',
-//     eventType: 'Conference'
-// };
+// Example data
+const oldEventData = {
+    eventName: 'Tech Conference 2023',
+    eventURL: 'https://tech-conference-2023.com',
+    eventType: 'Conference'
+};
 
-// const newEventData = {
-//     eventName: 'Tech Conference 2023',
-//     eventURL: 'https://tech-conference-2023-updated.com',
-//     eventType: 'Conference'
-// };
+const newEventData = {
+    eventName: 'Tech Conference 2023',
+    eventURL: 'https://tech-conference-2023-updated.com',
+    eventType: 'Conference'
+};
 
-// const differences = compareEvents(oldEventData, newEventData);
-// console.log(differences);
-// // Output: [ { field: 'eventURL', oldValue: 'https://tech-conference-2023.com', newValue: 'https://tech-conference-2023-updated.com' } ]
+const differences = compareEvents(oldEventData, newEventData);
+console.log(differences);
+// Output: [ { field: 'eventURL', oldValue: 'https://tech-conference-2023.com', newValue: 'https://tech-conference-2023-updated.com' } ]
