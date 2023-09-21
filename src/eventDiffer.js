@@ -34,7 +34,7 @@ const oldEventData = {
 };
 
 const newEventData = {
-    eventName: 'Tech Conference 2023',
+    eventName: 'Tech Conference 2024',
     eventURL: 'https://tech-conference-2023-updated.com',
     eventType: 'Conference'
 };
