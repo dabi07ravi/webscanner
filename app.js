@@ -3,7 +3,7 @@ let baseUrls = require("./src/base-urls");
 const { performTask, generateUrls } = require('./src/utils.js');
 
 cron.schedule('* * * * * *', () => {
-  let gUrls = generateUrls(baseUrls)
+  let gUrls = generateUrls(baseUrls);
   performTask(gUrls);
   console.log('running a task every minute', urls);
 });
