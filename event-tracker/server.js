@@ -1,7 +1,7 @@
+require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
 const dbConfig = require('./config/database'); // Import database configuration
-require('dotenv').config();
 const eventsRouter = require('./routes/events');
 const notificationsRouter = require('./routes/notifications');
 const dashboardRoutes = require('./routes/dashboardRoutes');

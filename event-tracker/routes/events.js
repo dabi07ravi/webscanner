@@ -28,14 +28,4 @@ router.post('/', async (req, res) => {
     }
 });
 
-// Update an event
-router.patch('/:id', async (req, res) => {
-    // Logic to update event based on provided ID
-});
-
-// Delete an event
-router.delete('/:id', async (req, res) => {
-    // Logic to delete event based on provided ID
-});
-
 module.exports = router;
