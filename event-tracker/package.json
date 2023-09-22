@@ -7,10 +7,6 @@
     "start": "node server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/Arcgate-pradhyuman/web-scanner/event-tracker.git"
-  },
   "author": "arcgate team",
   "license": "ISC",
   "dependencies": {
@@ -22,9 +18,5 @@
     "puppeteer": "^10.4.0",
     "winston": "^3.10.0"
   },
-  "devDependencies": {},
-  "bugs": {
-    "url": "https://github.com/Arcgate-pradhyuman/web-scanner/issues"
-  },
-  "homepage": "https://github.com/Arcgate-pradhyuman/web-scanner#readme"
+  "devDependencies": {}
 }
