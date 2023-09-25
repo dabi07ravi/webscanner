@@ -3,8 +3,13 @@ const express = require('express');
 const mongoose = require('mongoose');
 const dbConfig = require('./config/database'); // Import database configuration
 const eventsRouter = require('./routes/events');
-const notificationsRouter = require('./routes/notifications');
-const dashboardRoutes = require('./routes/dashboardRoutes');
+//const notificationsRouter = require('./routes/notifications');
+//const dashboardRoutes = require('./routes/dashboardRoutes');
+
+
+//ravi changes
+const eventRouter = require('./routes/base_event.router');
+const chkEventRouter = require('./routes/change_event.router')
 
 
 
@@ -29,11 +34,15 @@ app.use(express.json());
 app.get('/', (req, res) => {
     res.send('Event Tracker API is up and running!');
 });
+//api
+//ravi changes
+app.use('/api', eventRouter);
+app.use('/api',chkEventRouter);
 
 // Then, after initializing your Express app
 app.use('/events', eventsRouter);
-app.use('/notifications', notificationsRouter);
-app.use(dashboardRoutes);
+//app.use('/notifications', notificationsRouter);
+//app.use(dashboardRoutes);
 // You can further include other routes here:
 // Example: app.use('/events', eventsRouter);
 
