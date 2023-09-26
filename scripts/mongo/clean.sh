@@ -1,10 +1,10 @@
 #!/bin/bash
 
 # Stop the MongoDB container
-sudo docker stop mongodb_container
+sudo docker stop event_tracker_container
 
 # Remove the MongoDB container
-sudo docker rm mongodb_container
+sudo docker rm event_tracker_container
 
 # Optionally remove the MongoDB image
 read -p "Do you want to remove the MongoDB image (mongo:latest)? [y/N]: " remove_img
