@@ -1,5 +1,5 @@
 const eventListmodel = require("../models/base_event.model");
-const dataScrapper = require("../services/scrapper");
+const dataScrapper = require("./scrapper");
 const errorLogsModel = require("../models/errorLogs.model");
 
 const insertEventData = async (req, res) => {
