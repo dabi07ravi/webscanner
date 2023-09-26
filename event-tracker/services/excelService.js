@@ -15,7 +15,7 @@ const convertJsonToExcel = async (eventData) => {
       type: "binary",
     }); // Assign the result to a variable
 
-    XLSX.writeFile(workbook, "eventsData.xlsx"); // Use 'workbook' instead of 'workBook'
+    XLSX.writeFile(workbook, "../reports/eventsData.xlsx"); // Use 'workbook' instead of 'workBook'
   } catch (error) {
     console.log(`error while generating the report : ${error.message}`);
   }
