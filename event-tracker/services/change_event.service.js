@@ -1,6 +1,7 @@
 const base_event_model = require("../models/base_event.model");
 const errorLogsModel = require("../models/errorLogs.model");
 const dataScrapper = require("../services/scrapper");
+const reportGeneration = require('../services/excelService')
 
 const chkEventData = async (req, res) => {
   try {
@@ -29,7 +30,7 @@ const chkEventData = async (req, res) => {
                   : 1,
               });
               await newEvent.save();
-              newData.push(newEvent);
+              newData.push({ "url": newEvent.url });
             }
           }
         } else {
@@ -45,6 +46,8 @@ const chkEventData = async (req, res) => {
     );
     if (newData.length !== 0) {
       res.send("new data stored successfully");
+      console.log("newData",newData);
+      await reportGeneration(newData)
       newData.splice(0, newData.length);
     } else {
       res.send("no new data found");

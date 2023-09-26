@@ -19,6 +19,6 @@ const base_event_Schema = new mongoose.Schema(
   { timestamps: true }
 );
 
-const base_event_Model = mongoose.model("base_event", base_event_Schema);
+const base_event_Model = mongoose.model("eventList", base_event_Schema);
 
 module.exports = base_event_Model;
