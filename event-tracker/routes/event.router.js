@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { insertEventData } = require('../services/event_service');
+const { insertEventData } = require('../services/event.service');
 
 router.post('/insert', async (req, res) => {
   try {
