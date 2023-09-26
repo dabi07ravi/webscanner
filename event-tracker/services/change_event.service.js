@@ -1,60 +1,52 @@
+const _ = require('lodash');
 const eventListmodel = require("../models/eventList.model");
 const errorLogsModel = require("../models/errorLogs.model");
 const dataScrapper = require("../services/scrapper");
-const reportGeneration = require('../services/excelService')
+const reportGeneration = require('../services/excelService');
 
-const chkEventData = async (req, res) => {
+const chkEventData = async () => {
+  const newData = [];
+  const notFoundScrappedData = [];
+
   try {
-    const newData = [];
-    const notFoundScrappedData = [];
     const events = await eventListmodel.find();
-    await Promise.all(
-      events.map(async (event) => {
-        const scrappedData = await dataScrapper(event.url, event.fields);
-        console.log("scrappedData", scrappedData);
-        const latestEventExists = await eventListmodel
-          .findOne({ url: event.url })
-          .sort({ version: -1 });
-        if (
-          Object.keys(scrappedData).length !== 0 &&
-          Object.keys(latestEventExists).length !== 0
-        ) {
-          for (const key in scrappedData) {
-            if (scrappedData[key] !== latestEventExists.scrappedData[key]) {
-              const newEvent = new eventListmodel({
-                url: event.url,
-                fields: event.fields,
-                scrappedData: scrappedData,
-                version: latestEventExists?.version
-                  ? latestEventExists.version + 1
-                  : 1,
-              });
-              await newEvent.save();
-              newData.push({ "url": newEvent.url });
-            }
-          }
-        } else {
-          const errorEvent = new errorLogsModel({
+
+    const promises = events.map(async (event) => {
+      const scrappedData = await dataScrapper(event.url, event.fields);
+
+      if (!_.isEmpty(scrappedData)) {
+        if (!_.isEqual(scrappedData, event.scrappedData)) {
+          const newEvent = new eventListmodel({
             url: event.url,
             fields: event.fields,
-            scrappedData: scrappedData,
+            scrappedData,
+            version: event.version ? event.version + 1 : 1,
           });
-          await errorEvent.save();
-          notFoundScrappedData.push(event.url);
+          await newEvent.save();
+          newData.push({ url: newEvent.url });
         }
-      })
-    );
-    if (newData.length !== 0) {
-      res.send("new data stored successfully");
-      console.log("newData",newData);
-      await reportGeneration(newData)
-      newData.splice(0, newData.length);
+      } else {
+        const errorEvent = new errorLogsModel({
+          url: event.url,
+          fields: event.fields,
+          scrappedData,
+        });
+        await errorEvent.save();
+        notFoundScrappedData.push(event.url);
+      }
+    });
+
+    await Promise.all(promises);
+
+    if (!_.isEmpty(newData)) {
+      await reportGeneration(newData);
+      return { success: true, message: "new data stored successfully" };
     } else {
-      res.send("no new data found");
+      return { success: false, message: "no new data found" };
     }
   } catch (error) {
     console.log(`error while checking the data ${error.message}`);
-    res.status(500).send("Internal Server Error");
+    throw error;
   }
 };
 
