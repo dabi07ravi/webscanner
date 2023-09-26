@@ -1,11 +1,11 @@
-const base_event_model = require("../models/base_event.model");
+const eventListmodel = require("../models/base_event.model");
 const dataScrapper = require("../services/scrapper");
 const errorLogsModel = require("../models/errorLogs.model");
 
 const insertEventData = async (req, res) => {
   try {
     const { url, fields } = req.body;
-    const urlExist = await base_event_model.find({ url: url });
+    const urlExist = await eventListmodel.find({ url: url });
     if (urlExist.length !== 0) {
       return res.send("url already exits");
     }
@@ -19,7 +19,7 @@ const insertEventData = async (req, res) => {
       await errorEvent.save();
       return res.send("no data comes from this url");
     }
-    const insertedEvent = await base_event_model.create({
+    const insertedEvent = await eventListmodel.create({
       url: url,
       fields: fields,
       scrappedData: scrappedData, // Spread the scrappedData object to insert its fields

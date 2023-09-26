@@ -1,4 +1,4 @@
-const base_event_model = require("../models/base_event.model");
+const eventListmodel = require("../models/eventList.model");
 const errorLogsModel = require("../models/errorLogs.model");
 const dataScrapper = require("../services/scrapper");
 const reportGeneration = require('../services/excelService')
@@ -7,12 +7,12 @@ const chkEventData = async (req, res) => {
   try {
     const newData = [];
     const notFoundScrappedData = [];
-    const events = await base_event_model.find();
+    const events = await eventListmodel.find();
     await Promise.all(
       events.map(async (event) => {
         const scrappedData = await dataScrapper(event.url, event.fields);
         console.log("scrappedData", scrappedData);
-        const latestEventExists = await base_event_model
+        const latestEventExists = await eventListmodel
           .findOne({ url: event.url })
           .sort({ version: -1 });
         if (
@@ -21,7 +21,7 @@ const chkEventData = async (req, res) => {
         ) {
           for (const key in scrappedData) {
             if (scrappedData[key] !== latestEventExists.scrappedData[key]) {
-              const newEvent = new base_event_model({
+              const newEvent = new eventListmodel({
                 url: event.url,
                 fields: event.fields,
                 scrappedData: scrappedData,

@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const base_event_Schema = new mongoose.Schema(
+const eventListSchema = new mongoose.Schema(
   {
     url: {
       type: String,
@@ -19,6 +19,6 @@ const base_event_Schema = new mongoose.Schema(
   { timestamps: true }
 );
 
-const base_event_Model = mongoose.model("eventList", base_event_Schema);
+const eventListModel = mongoose.model("eventList", eventListSchema);
 
-module.exports = base_event_Model;
+module.exports = eventListModel;
