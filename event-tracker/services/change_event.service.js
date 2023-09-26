@@ -9,10 +9,31 @@ const chkEventData = async () => {
   const notFoundScrappedData = [];
 
   try {
-    const events = await eventListmodel.find();
+    // const events = await eventListmodel.find();
+
+    // const events = await eventListmodel
+    //   .find({})
+    //   .sort({ version: -1 });
+
+
+    const events = await eventListmodel.aggregate([
+      {
+        $sort: { documentId: 1, version: -1 } // Sort by documentId first, then by version
+      },
+      {
+        $group: {
+          _id: "$documentId",  // Group by the document's unique identifier
+          latestDocument: { $first: "$$ROOT" }  // Get the first document of each group after sorting
+        }
+      },
+      {
+        $replaceRoot: { newRoot: "$latestDocument" }  // Replace root to have the structure of original document
+      }
+    ]);
+
 
     const promises = events.map(async (event) => {
-      const scrappedData = await dataScrapper(event.url, event.fields);
+    const scrappedData = await dataScrapper(event.url, event.fields);
 
       if (!_.isEmpty(scrappedData)) {
         if (!_.isEqual(scrappedData, event.scrappedData)) {
