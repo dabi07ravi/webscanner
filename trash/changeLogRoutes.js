@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const changeLogService = require('../services/changeLogService');
+const changeLogService = require('./changeLogService');
 
 // Fetch change logs for a specific event
 router.get('/logs/:eventId', async (req, res, next) => {
