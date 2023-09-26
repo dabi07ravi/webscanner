@@ -6,7 +6,7 @@ const dbConfig = require('./config/database'); // Import database configuration
 
 
 //ravi changes
-const eventRouter = require('./routes/base_event.router');
+const eventRouter = require('./routes/event.router');
 const chkEventRouter = require('./routes/change_event.router')
 
 

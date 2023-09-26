@@ -1,4 +1,4 @@
-const eventListmodel = require("../models/base_event.model");
+const eventListmodel = require("../models/eventList.model");
 const dataScrapper = require("./scrapper");
 const errorLogsModel = require("../models/errorLogs.model");
 
