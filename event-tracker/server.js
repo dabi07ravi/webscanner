@@ -2,9 +2,7 @@ require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
 const dbConfig = require('./config/database'); // Import database configuration
-const eventsRouter = require('./routes/events');
-//const notificationsRouter = require('./routes/notifications');
-//const dashboardRoutes = require('./routes/dashboardRoutes');
+
 
 
 //ravi changes
@@ -39,12 +37,7 @@ app.get('/', (req, res) => {
 app.use('/api', eventRouter);
 app.use('/api',chkEventRouter);
 
-// Then, after initializing your Express app
-app.use('/events', eventsRouter);
-//app.use('/notifications', notificationsRouter);
-//app.use(dashboardRoutes);
-// You can further include other routes here:
-// Example: app.use('/events', eventsRouter);
+
 
 // Starting the server
 app.listen(PORT, () => {
