@@ -18,7 +18,14 @@ const dataScrapper = async (url, fields) => {
         result[fieldName] = $(fields[fieldName]).text().trim();
       }
     }
-    return result;
+    for(let key in result){
+      if(result[key]){
+        return result
+      }else{
+        return result = {}
+      }
+    }
+    //return result;
   } catch (error) {
     return {}
   }
