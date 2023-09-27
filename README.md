@@ -21,28 +21,38 @@ This README guides you through starting a MongoDB instance in a Docker container
 
 ### Backup
 
-1. **Dump the data**:
+1. **Clear previous backup in the container (to avoid duplicates)**:
    ```bash
-   docker exec -it event_tracker_container mongodump --out /data/db/backup
+   docker exec -it event_tracker_container rm -rf /data/backup/*
    ```
 
-2. **Retrieve the backup to your host**:
+2. **Dump the data**:
    ```bash
-   docker cp event_tracker_container:/data/db/backup ./database
+   docker exec -it event_tracker_container mongodump --out /data/backup
+   ```
+
+3. **Clear any previous backup on the host**:
+   ```bash
+   rm -rf ./database/*
+   ```
+
+4. **Retrieve the backup to your host**:
+   ```bash
+   docker cp event_tracker_container:/data/backup ./database
    ```
 
 ### Restore
 
 1. **Copy backup from host to container**:
    ```bash
-   docker cp ./database event_tracker_container:/data/db/backup
+   docker cp ./database event_tracker_container:/data/backup
    ```
 
 2. **Restore the data**:
    ```bash
-   docker exec -it event_tracker_container mongorestore /data/db/backup
+   docker exec -it event_tracker_container mongorestore /data/backup
    ```
 
 ---
 
-Adjust the paths as needed if you change the backup location.
+Note: The added steps ensure that both your host machine and the Docker container directories are clear of old backups before you start a new backup process. This should help prevent the duplicate data issue you encountered. Always make sure you're comfortable with the directories you're deleting before using commands like `rm -rf`.
