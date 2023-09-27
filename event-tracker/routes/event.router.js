@@ -1,7 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { insertNewEvent } = require('../services/event.service');
-const { scrapEventData } = require('../services/change_event.service');
+const { insertNewEvent , scrapEventData} = require('../services/event.service');
 
 router.post('/insert-new-event', async (req, res) => {
   try {

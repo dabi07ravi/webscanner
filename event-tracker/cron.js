@@ -1,5 +1,5 @@
 var cron = require('node-cron');
-const { scrapEventData } = require('./services/change_event.service');
+const { scrapEventData } = require('./services/event.service');
 
 // cron.schedule('* * * * * *', () => {
 //   scrapEventData();
