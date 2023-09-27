@@ -25,7 +25,6 @@ const dataScrapper = async (url, fields) => {
         return result = {}
       }
     }
-    //return result;
   } catch (error) {
     return {}
   }

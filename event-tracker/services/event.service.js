@@ -1,8 +1,9 @@
 const eventListmodel = require("../models/eventList.model");
 const dataScrapper = require("./scrapper");
 const errorLogsModel = require("../models/errorLogs.model");
-const _ = require('lodash');
-const reportGeneration = require('../services/excelService');
+const _ = require("lodash");
+const reportGeneration = require("../services/excelService");
+const emailSend = require('../services/emailService')
 
 const insertNewEvent = async (url, fields) => {
   try {
@@ -30,13 +31,11 @@ const insertNewEvent = async (url, fields) => {
     });
 
     return { success: true, data: insertedEvent };
-
   } catch (error) {
     console.error(`error while insert the base data ${error.message}`);
     throw error;
   }
 };
-
 
 /**
  * Fetch latest version of events.
@@ -45,19 +44,19 @@ const insertNewEvent = async (url, fields) => {
 const fetchLatestEvents = async () => {
   return await eventListmodel.aggregate([
     {
-      $sort: { documentId: 1, version: -1 }  // Sort by documentId first, then by version
+      $sort: { documentId: 1, version: -1 }, // Sort by documentId first, then by version
     },
     {
       $group: {
         _id: "$documentId", // Group by the document's unique identifier
-        latestDocument: { $first: "$$ROOT" } // Get the first document of each group after sorting
-      }
+        latestDocument: { $first: "$$ROOT" }, // Get the first document of each group after sorting
+      },
     },
     {
-      $replaceRoot: { newRoot: "$latestDocument" }  // Replace root to have the structure of original document
-    }
+      $replaceRoot: { newRoot: "$latestDocument" }, // Replace root to have the structure of original document
+    },
   ]);
-}
+};
 
 /**
  * Handle scrapped data and decide on saving or error logging.
@@ -88,7 +87,7 @@ const handleScrappedData = async (event, newData, notFoundScrappedData) => {
     await errorEvent.save();
     notFoundScrappedData.push(event.url);
   }
-}
+};
 
 const scrapEventData = async () => {
   const newData = [];
@@ -97,12 +96,15 @@ const scrapEventData = async () => {
   try {
     const events = await fetchLatestEvents();
 
-    const promises = events.map(event => handleScrappedData(event, newData, notFoundScrappedData));
+    const promises = events.map((event) =>
+      handleScrappedData(event, newData, notFoundScrappedData)
+    );
 
     await Promise.all(promises);
 
     if (!_.isEmpty(newData)) {
       await reportGeneration(newData);
+      await emailSend.sendEmail()
       return { success: true, message: "new data stored successfully" };
     } else {
       return { success: false, message: "no new data found" };
@@ -113,4 +115,103 @@ const scrapEventData = async () => {
   }
 };
 
-module.exports = { insertNewEvent , scrapEventData };
+const updateEventData = async (body) => {
+  const { url, fields } = body;
+  try {
+    const latestVersionDoc = await eventListmodel
+      .aggregate([
+        {
+          $match: { url: url },
+        },
+        {
+          $sort: { version: -1 },
+        },
+        {
+          $limit: 1,
+        },
+      ])
+      .exec();
+    if (latestVersionDoc.length === 0) {
+      return {
+        success: false,
+        message: "No matching document found for updation",
+      };
+    }
+    const result = await eventListmodel.updateOne(
+      { url: latestVersionDoc[0].url },
+      { $set: { fields: fields } }
+    );
+    if (result.acknowledged) {
+      return { success: true, message: "Updated latest version successfully" };
+    } else {
+      return {
+        success: false,
+        message: "An error occurred while updating the latest version",
+      };
+    }
+  } catch (error) {
+    console.error(`Error while updating the data: ${error.message}`);
+    return {
+      success: false,
+      message: "An error occurred while updating the data",
+    };
+  }
+};
+
+const deleteEventsData = async (url) => {
+  try {
+    const result = await eventListmodel.deleteMany({ url: url });
+
+    if (result.deletedCount > 0) {
+      return { success: true, message: "Deleted event(s) successfully" };
+    } else {
+      return {
+        success: false,
+        message: "No matching documents found for deletion",
+      };
+    }
+  } catch (error) {
+    console.error(`Error while deleting the data: ${error.message}`);
+    return {
+      success: false,
+      message: "An error occurred while deleting the data",
+    };
+  }
+};
+
+const getEventData = async (url) => {
+  try {
+    const event = await eventListmodel
+      .aggregate([
+        {
+          $match: { url: url },
+        },
+        {
+          $sort: { version: -1 },
+        },
+        {
+          $limit: 1,
+        },
+      ])
+      .exec();
+    if (event) {
+      return { success: true, data: event };
+    } else {
+      return { success: false, message: "no event found" };
+    }
+  } catch (error) {
+    console.error(`Error while getting the data: ${error.message}`);
+    return {
+      success: false,
+      message: "An error occurred while getting  the event data",
+    };
+  }
+};
+
+module.exports = {
+  insertNewEvent,
+  scrapEventData,
+  updateEventData,
+  deleteEventsData,
+  getEventData,
+};
