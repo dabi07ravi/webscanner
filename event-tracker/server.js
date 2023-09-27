@@ -7,8 +7,6 @@ const dbConfig = require('./config/database'); // Import database configuration
 
 //ravi changes
 const eventRouter = require('./routes/event.router');
-const chkEventRouter = require('./routes/change_event.router')
-
 
 
 
@@ -35,11 +33,10 @@ app.get('/', (req, res) => {
 //api
 //ravi changes
 app.use('/api', eventRouter);
-app.use('/api',chkEventRouter);
-
 
 
 // Starting the server
 app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);
+    require("./cron.js")
 });
