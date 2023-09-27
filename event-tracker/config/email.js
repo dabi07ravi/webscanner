@@ -1,9 +1,11 @@
 // config/email.js
 
 module.exports = {
-    service: 'gmail',  // You can change this based on your email service provider
+    host: process.env.HOST,
+    port: parseInt(process.env.HOST_PORT),
+    secure: true,
     auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASSWORD
+        user: process.env.HOST_USER,
+        pass: process.env.HOST_PASSWORD
     }
 };
