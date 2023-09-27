@@ -28,14 +28,14 @@ This README guides you through starting a MongoDB instance in a Docker container
 
 2. **Retrieve the backup to your host**:
    ```bash
-   docker cp event_tracker_container:/data/db/backup ./mongodb_data
+   docker cp event_tracker_container:/data/db/backup ./database
    ```
 
 ### Restore
 
 1. **Copy backup from host to container**:
    ```bash
-   docker cp ./mongodb_data event_tracker_container:/data/db/backup
+   docker cp ./database event_tracker_container:/data/db/backup
    ```
 
 2. **Restore the data**:
