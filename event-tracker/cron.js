@@ -1,14 +1,14 @@
 var cron = require('node-cron');
-const { chkEventData } = require('./services/change_event.service');
+const { scrapEventData } = require('./services/change_event.service');
 
 // cron.schedule('* * * * * *', () => {
-//   chkEventData();
+//   scrapEventData();
 //   console.log('running a task every second', urls);
 // });
 
 (async () => {
   console.log("we are inside cron file");
-  let logd = await chkEventData();
+  let logd = await scrapEventData();
   console.log(logd);
 })();
 

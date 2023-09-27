@@ -7,7 +7,6 @@ const dbConfig = require('./config/database'); // Import database configuration
 
 //ravi changes
 const eventRouter = require('./routes/event.router');
-const chkEventRouter = require('./routes/change_event.router')
 
 
 
@@ -34,8 +33,6 @@ app.get('/', (req, res) => {
 //api
 //ravi changes
 app.use('/api', eventRouter);
-app.use('/api',chkEventRouter);
-
 
 
 // Starting the server

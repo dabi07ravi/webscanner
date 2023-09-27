@@ -2,7 +2,7 @@ const eventListmodel = require("../models/eventList.model");
 const dataScrapper = require("./scrapper");
 const errorLogsModel = require("../models/errorLogs.model");
 
-const insertEventData = async (url, fields) => {
+const insertNewEvent = async (url, fields) => {
   try {
     const urlExist = await eventListmodel.find({ url: url });
     if (urlExist.length !== 0) {
@@ -35,4 +35,4 @@ const insertEventData = async (url, fields) => {
   }
 };
 
-module.exports = { insertEventData };
+module.exports = { insertNewEvent , scrapEventData };

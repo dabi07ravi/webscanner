@@ -56,7 +56,7 @@ const handleScrappedData = async (event, newData, notFoundScrappedData) => {
   }
 }
 
-const chkEventData = async () => {
+const scrapEventData = async () => {
   const newData = [];
   const notFoundScrappedData = [];
 
@@ -79,4 +79,4 @@ const chkEventData = async () => {
   }
 };
 
-module.exports = { chkEventData };
+module.exports = { scrapEventData };
