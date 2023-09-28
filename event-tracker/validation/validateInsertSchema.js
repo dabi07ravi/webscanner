@@ -12,7 +12,6 @@ const validateInsertSchema = (req,res,next) => {
     if(error){
         return res.status(404).send({
             error : error.details[0].message
-          
         })
     }else{
         next();

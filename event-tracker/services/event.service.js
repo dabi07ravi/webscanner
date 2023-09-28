@@ -19,7 +19,6 @@ const insertNewEvent = async (url, fields, type) => {
       scrappedData = fields; // You mentioned pattern, so use fields directly
     } else {
       scrappedData = await dataScrapper(url, fields);
-
       if (Object.keys(scrappedData).length === 0) {
         const errorEvent = new errorLogsModel({
           url,
@@ -151,11 +150,11 @@ const updateEventData = async (body) => {
       { $set: { fields: fields } }
     );
     if (result.acknowledged) {
-      return { success: true, message: "Updated latest version successfully" };
+      return { success: true, message: "Updated fields successfully" };
     } else {
       return {
         success: false,
-        message: "An error occurred while updating the latest version",
+        message: "An error occurred while updating the fields",
       };
     }
   } catch (error) {
@@ -203,7 +202,7 @@ const getEventData = async (url) => {
         },
       ])
       .exec();
-    if (event) {
+    if (event.length !== 0) {
       return { success: true, data: event };
     } else {
       return { success: false, message: "no event found" };
