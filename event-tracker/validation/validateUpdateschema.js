@@ -6,7 +6,7 @@ const eventSchema = joi.object({
 })
 
 
-const validateSchema = (req,res,next) => {
+const validateUpdateSchema = (req,res,next) => {
     const {error} = eventSchema.validate(req.body);
     if(error){
         return res.status(404).send({
@@ -18,4 +18,4 @@ const validateSchema = (req,res,next) => {
     }
 }
 
-module.exports = validateSchema;
+module.exports = validateUpdateSchema;
