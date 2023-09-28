@@ -1,5 +1,8 @@
 const cheerio = require("cheerio");
-const axios = require("axios");
+let axios = require("axios");
+// const HttpsProxyAgent = require("https-proxy-agent");
+// const httpsAgent = new HttpsProxyAgent({ host: "92.222.153.172", port: "3128", auth: "username:password" })
+// axios = axios.create({ httpsAgent });
 
 const dataScrapper = async (url, fields) => {
   try {
@@ -18,10 +21,10 @@ const dataScrapper = async (url, fields) => {
         result[fieldName] = $(fields[fieldName]).text().trim();
       }
     }
-    for(let key in result){
-      if(result[key]){
+    for (let key in result) {
+      if (result[key]) {
         return result
-      }else{
+      } else {
         return result = {}
       }
     }
