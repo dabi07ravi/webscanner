@@ -56,3 +56,23 @@ This README guides you through starting a MongoDB instance in a Docker container
 ---
 
 Note: The added steps ensure that both your host machine and the Docker container directories are clear of old backups before you start a new backup process. This should help prevent the duplicate data issue you encountered. Always make sure you're comfortable with the directories you're deleting before using commands like `rm -rf`.
+
+---
+
+## Importing Postman Collection for Express Node.js API
+
+To easily interact with the Express Node.js API, a Postman collection has been provided. Follow these steps to import and use the collection:
+
+1. **Open Postman**: Launch the Postman application on your local machine.
+
+2. **Navigate to Import**: At the top left corner of the Postman window, you will see the "Import" button. Click on it.
+
+3. **Select File**: In the pop-up dialog, choose the 'File' tab, then locate and select the provided `.json` Postman collection file from your local directory.
+
+4. **Confirm the Import**: Once the file is chosen, click the 'Import' button. Postman will process the file and, upon successful import, the requests will appear under the Collections tab on the left sidebar.
+
+5. **Using the Collection**: With the collection imported, you can now click on individual requests to see their details. From here, you can send requests to your Express Node.js API, which will interact with the MongoDB.
+
+---
+
+Note: Postman collections are a set of saved requests. Ensure you understand each request before sending it, especially if your API interacts with a live database. Always be cautious with requests that modify data to prevent unintended changes.
