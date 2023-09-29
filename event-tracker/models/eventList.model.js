@@ -11,6 +11,10 @@ const eventListSchema = new mongoose.Schema(
     scrappedData : {
       type: Object,
     },
+    type : {
+      type : String,
+      default : "UNIQUE"
+    },
     version: {
       type: Number,
       default : 0

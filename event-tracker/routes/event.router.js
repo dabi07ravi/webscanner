@@ -7,13 +7,14 @@ const {
   deleteEventsData,
   getEventData,
 } = require("../services/event.service");
-const validateSchema = require("../validation/validateSchema");
+const validateInsertSchema = require("../validation/validateInsertSchema");
+const validateUpdateSchema = require("../validation/validateUpdateschema");
 
 
-router.post("/insert-new-event", validateSchema, async (req, res) => {
+router.post("/insert-new-event", validateInsertSchema, async (req, res) => {
   try {
-    const { url, fields } = req.body;
-    const result = await insertNewEvent(url, fields);
+    const { url, fields, type } = req.body;
+    const result = await insertNewEvent(url, fields, type.toUpperCase());
 
     if (result.success) {
       res.send(result.data);
@@ -34,7 +35,7 @@ router.get("/scrap-data", async (req, res) => {
   }
 });
 
-router.put("/update", validateSchema, async (req, res) => {
+router.put("/update", validateUpdateSchema, async (req, res) => {
   try {
     const result = await updateEventData(req.body);
     if (result.success) {
