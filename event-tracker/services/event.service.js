@@ -74,7 +74,6 @@ const fetchLatestEvents = async () => {
  */
 const handleScrappedData = async (event, newData, notFoundScrappedData) => {
   const scrappedData = await dataScrapper(event.url, event.fields);
-
   if (!_.isEmpty(scrappedData)) {
     if (!_.isEqual(scrappedData, event.scrappedData)) {
       const newEvent = new eventListmodel({
@@ -82,6 +81,7 @@ const handleScrappedData = async (event, newData, notFoundScrappedData) => {
         fields: event.fields,
         scrappedData,
         version: event.version ? event.version + 1 : 1,
+        type : event.type
       });
       await newEvent.save();
       newData.push({ url: newEvent.url , ...newEvent.scrappedData });
@@ -103,6 +103,7 @@ const scrapEventData = async () => {
 
   try {
     const events = await fetchLatestEvents();
+    console.log("events",events);
 
     const promises = events.map((event) =>
       handleScrappedData(event, newData, notFoundScrappedData)
