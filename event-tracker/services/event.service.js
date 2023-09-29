@@ -84,7 +84,7 @@ const handleScrappedData = async (event, newData, notFoundScrappedData) => {
         version: event.version ? event.version + 1 : 1,
       });
       await newEvent.save();
-      newData.push({ url: newEvent.url });
+      newData.push({ url: newEvent.url , ...newEvent.scrappedData });
     }
   } else {
     const errorEvent = new errorLogsModel({

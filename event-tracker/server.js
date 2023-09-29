@@ -2,7 +2,8 @@ require("dotenv").config();
 const express = require("express");
 const mongoose = require("mongoose");
 const dbConfig = require("./config/database"); // Import database configuration
-const dbConnection = require('./utils/database.utils')
+const dbConnection = require('./utils/database.utils');
+const path = require("path");
 
 //ravi changes
 const eventRouter = require("./routes/event.router");
