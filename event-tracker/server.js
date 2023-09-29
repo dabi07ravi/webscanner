@@ -2,7 +2,8 @@ require("dotenv").config();
 const express = require("express");
 const mongoose = require("mongoose");
 const dbConfig = require("./config/database"); // Import database configuration
-const path = require('path');
+const dbConnection = require('./utils/database.utils')
+
 //ravi changes
 const eventRouter = require("./routes/event.router");
 
@@ -10,14 +11,7 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 // MongoDB Connection using configurations from the config folder
-mongoose
-  .connect(dbConfig.mongoURI, dbConfig.options)
-  .then(() => {
-    console.log("Connected to MongoDB.");
-  })
-  .catch((err) => {
-    console.error("Error connecting to MongoDB:", err.message);
-  });
+dbConnection()
 
 // Middleware to parse JSON data
 app.use(express.json());
