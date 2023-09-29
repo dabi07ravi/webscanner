@@ -7,5 +7,6 @@ module.exports = {
     auth: {
         user: process.env.HOST_USER,
         pass: process.env.HOST_PASSWORD
-    }
+    },
+    recipents : (process.env.RECIPENTS || '').split(',')
 };
