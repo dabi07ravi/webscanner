@@ -5,37 +5,46 @@ const _ = require("lodash");
 const reportGeneration = require("../services/excelService");
 const emailSend = require('../services/emailService')
 
-const insertNewEvent = async (url, fields) => {
+const insertNewEvent = async (url, fields, type) => {
   try {
-    const urlExist = await eventListmodel.find({ url: url });
-    if (urlExist.length !== 0) {
-      return { success: false, message: "url already exits" };
+    const urlExist = await eventListmodel.findOne({ url });
+
+    if (urlExist) {
+      return { success: false, message: "URL already exists" };
     }
 
-    const scrappedData = await dataScrapper(url, fields);
+    let scrappedData;
 
-    if (Object.keys(scrappedData).length === 0) {
-      const errorEvent = new errorLogsModel({
-        url: url,
-        fields: fields,
-        scrappedData: scrappedData,
-      });
-      await errorEvent.save();
-      return { success: false, message: "no data comes from this url" };
+    if (type === "PATTERN") {
+      scrappedData = fields; // You mentioned pattern, so use fields directly
+    } else {
+      scrappedData = await dataScrapper(url, fields);
+
+      if (Object.keys(scrappedData).length === 0) {
+        const errorEvent = new errorLogsModel({
+          url,
+          fields,
+          scrappedData
+        });
+
+        await errorEvent.save();
+        return { success: false, message: "No data from this URL" };
+      }
     }
 
     const insertedEvent = await eventListmodel.create({
-      url: url,
-      fields: fields,
-      scrappedData: scrappedData,
+      url,
+      fields,
+      scrappedData,
+      type
     });
-
     return { success: true, data: insertedEvent };
   } catch (error) {
-    console.error(`error while insert the base data ${error.message}`);
+    console.error(`Error while inserting the base data: ${error.message}`);
     throw error;
   }
 };
+
 
 /**
  * Fetch latest version of events.
