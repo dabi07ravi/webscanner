@@ -21,7 +21,7 @@ const emailService = {
         const subject = "Freshly Harvested: Data Snapshot Up to " + currentDate;
         const emailTemplatePath = path.join(__dirname, '..', 'views', 'emailTemplate.ejs');
         const reportfileName = `report_${currentDate}.xlsx`;
-        const reportPath = path.join(__dirname, '..', 'reports', reportfileName);
+        const reportPath = path.join(__dirname, '../..', 'reports', reportfileName);
         const html = await ejs.renderFile(emailTemplatePath, { recipientName : "pradhyuman" });
 
 

@@ -15,7 +15,7 @@ const convertJsonToExcel = async (eventData) => {
 
     // Specify the file path with the current date and prefix
     const fileName = `${prefix}_${currentDate}.xlsx`;
-    const filePath = path.join(__dirname, "../reports", fileName);
+    const filePath = path.join(__dirname, "../../reports", fileName);
 
     // Generate buffer
     const buffer = XLSX.write(workbook, { bookType: "xlsx", type: "buffer" });
