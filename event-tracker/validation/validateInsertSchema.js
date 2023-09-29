@@ -3,7 +3,6 @@ const joi  = require('joi');
 const eventSchema = joi.object({
     url: joi.string().required(),
     fields: joi.object().required(),
-    type : joi.string().required(),
 })
 
 

@@ -17,7 +17,7 @@ const eventListSchema = new mongoose.Schema(
     },
     version: {
       type: Number,
-      default : 0
+      default : 1
     },
   },
   { timestamps: true }
