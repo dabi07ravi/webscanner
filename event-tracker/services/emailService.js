@@ -22,18 +22,16 @@ const emailService = {
         const emailTemplatePath = path.join(__dirname, '..', 'views', 'emailTemplate.ejs');
         const reportfileName = `report_${currentDate}.xlsx`;
         const reportPath = path.join(__dirname, '../..', 'reports', reportfileName);
-        const html = await ejs.renderFile(emailTemplatePath, { recipientName : "pradhyuman" });
+        const html = await ejs.renderFile(emailTemplatePath, { recipientName : "John Doe" });
 
 
         const attachments = [{
             filename: reportfileName,
             path: reportPath, // or a stream or a URL
         }];
-
-
         const mailOptions = {
             from: emailConfig.auth.user, // sender address
-            to: recipient || "pradhyuman@arcgate.com",               // list of receivers
+            to : emailConfig.recipents, 
             subject: subject,  // subject line
             html: html,               // HTML body content
             attachments: attachments
