@@ -76,3 +76,46 @@ To easily interact with the Express Node.js API, a Postman collection has been p
 ---
 
 Note: Postman collections are a set of saved requests. Ensure you understand each request before sending it, especially if your API interacts with a live database. Always be cautious with requests that modify data to prevent unintended changes.
+
+
+---
+
+# Event Tracker
+
+
+## Getting Started
+
+Follow the instructions below to set up the project on your local machine for development and testing purposes.
+
+### Prerequisites
+
+Ensure you have `yarn` installed. If not, install it using the following:
+
+```
+sudo npm install -g yarn
+```
+
+### Installation
+
+1. Navigate to the project directory:
+
+```
+cd event-tracker
+```
+
+2. Install the required dependencies:
+
+```
+yarn install
+```
+
+### Running the Project
+
+To run the project on your local machine:
+
+```
+yarn start
+```
+
+Happy coding!
+---
