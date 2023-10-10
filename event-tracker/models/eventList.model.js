@@ -1,3 +1,4 @@
+const { boolean } = require("joi");
 const mongoose = require("mongoose");
 
 const eventListSchema = new mongoose.Schema(
@@ -19,6 +20,10 @@ const eventListSchema = new mongoose.Schema(
       type: Number,
       default : 1
     },
+    processed : {
+      type : Boolean,
+      default : true
+    }
   },
   { timestamps: true }
 );
