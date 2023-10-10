@@ -135,6 +135,7 @@ const scrapEventData = async () => {
 
     if (!_.isEmpty(newData)) {
       await reportGeneration(newData);
+      await emailSend.sendEmail()
       return { success: true, message: "new data stored successfully" };
     } else {
       return { success: false, message: "no new data found" };
