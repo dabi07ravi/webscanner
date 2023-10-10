@@ -3,7 +3,7 @@ const dataScrapper = require("./scrapper");
 const errorLogsModel = require("../models/errorLogs.model");
 const _ = require("lodash");
 const reportGeneration = require("../services/excelService");
-const emailSend = require('../services/emailService')
+const emailSend = require("../services/emailService");
 
 const insertNewEvent = async (url, fields, type) => {
   try {
@@ -13,29 +13,22 @@ const insertNewEvent = async (url, fields, type) => {
       return { success: false, message: "URL already exists" };
     }
 
-    let scrappedData;
+    let scrappedData = await dataScrapper(url, fields);
+    if (Object.keys(scrappedData).length === 0) {
+      const errorEvent = new errorLogsModel({
+        url,
+        fields,
+        scrappedData,
+      });
 
-    if (type === "PATTERN") {
-      scrappedData = fields; // You mentioned pattern, so use fields directly
-    } else {
-      scrappedData = await dataScrapper(url, fields);
-      if (Object.keys(scrappedData).length === 0) {
-        const errorEvent = new errorLogsModel({
-          url,
-          fields,
-          scrappedData
-        });
-
-        await errorEvent.save();
-        return { success: false, message: "No data from this URL" };
-      }
+      await errorEvent.save();
+      return { success: false, message: "No data from this URL" };
     }
-
     const insertedEvent = await eventListmodel.create({
       url,
       fields,
       scrappedData,
-      type
+      type,
     });
     return { success: true, data: insertedEvent };
   } catch (error) {
@@ -44,7 +37,6 @@ const insertNewEvent = async (url, fields, type) => {
   }
 };
 
-
 /**
  * Fetch latest version of events.
  * @returns {Array} events
@@ -52,16 +44,19 @@ const insertNewEvent = async (url, fields, type) => {
 const fetchLatestEvents = async () => {
   return await eventListmodel.aggregate([
     {
-      $sort: { documentId: 1, version: -1 }, // Sort by documentId first, then by version
+      $match: { processed: true },
+    },
+    {
+      $sort: { url: 1, version: -1 }, // Sort by url (ascending) and version (descending)
     },
     {
       $group: {
-        _id: "$documentId", // Group by the document's unique identifier
-        latestDocument: { $first: "$$ROOT" }, // Get the first document of each group after sorting
+        _id: "$url", // Group by url
+        doc: { $first: "$$ROOT" }, // Take the first (highest version) document
       },
     },
     {
-      $replaceRoot: { newRoot: "$latestDocument" }, // Replace root to have the structure of original document
+      $replaceRoot: { newRoot: "$doc" }, // Replace root with the actual document
     },
   ]);
 };
@@ -81,10 +76,10 @@ const handleScrappedData = async (event, newData, notFoundScrappedData) => {
         fields: event.fields,
         scrappedData,
         version: event.version ? event.version + 1 : 1,
-        type : event.type
+        type: event.type,
       });
       await newEvent.save();
-      newData.push({ url: newEvent.url , ...newEvent.scrappedData });
+      newData.push({ url: newEvent.url, ...newEvent.scrappedData });
     }
   } else {
     const errorEvent = new errorLogsModel({
@@ -102,10 +97,37 @@ const scrapEventData = async () => {
   const notFoundScrappedData = [];
 
   try {
-    const events = await fetchLatestEvents();
-    console.log("events",events);
+    let events = await fetchLatestEvents();
+    let patternEvents = [];
+    let uniqueEvents = [];
+    let finalevents = [];
 
-    const promises = events.map((event) =>
+    // Use Promise.all to await all promises returned by map
+    await Promise.all(
+      events.map(async (event) => {
+        if (
+          event.type === "PATTERN" &&
+          event.url.includes("2023") &&
+          event.processed
+        ) {
+          const filter = { url: event.url };
+          const update = {
+            $set: {
+              processed: false,
+            },
+          };
+
+          await eventListmodel.updateOne(filter, update);
+          event.url = event.url.replace("2023", "2024");
+          patternEvents.push(event);
+        } else {
+          uniqueEvents.push(event);
+        }
+      })
+    );
+
+    finalevents = [...uniqueEvents, ...patternEvents];
+    const promises = finalevents.map((event) =>
       handleScrappedData(event, newData, notFoundScrappedData)
     );
 
@@ -113,7 +135,6 @@ const scrapEventData = async () => {
 
     if (!_.isEmpty(newData)) {
       await reportGeneration(newData);
-      await emailSend.sendEmail()
       return { success: true, message: "new data stored successfully" };
     } else {
       return { success: false, message: "no new data found" };
