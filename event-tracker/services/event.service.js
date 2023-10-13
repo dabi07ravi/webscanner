@@ -103,26 +103,41 @@ const scrapEventData = async () => {
     let finalevents = [];
 
     // Use Promise.all to await all promises returned by map
-    await Promise.all(events.map(async (event) => {
-      if (
-        event.type === "PATTERN" &&
-        event.url.includes("2023") &&
-        event.processed
-      ) {
-        const filter = { url: event.url };
-        const update = {
-          $set: {
-            processed: false,
-          },
-        };
-
-        await eventListmodel.updateOne(filter, update);
-        event.url = event.url.replace("2023", "2024");
-        patternEvents.push(event);
-      } else {
-        uniqueEvents.push(event);
-      }
-    }));
+    await Promise.all(
+      events.map(async (event) => {
+        if (
+          event.type === "PATTERN" &&
+          event.url.includes("2023") &&
+          event.processed
+        ) {
+          const filter = { url: event.url };
+          const update = {
+            $set: {
+              processed: false,
+            },
+          };
+          await eventListmodel.updateOne(filter, update);
+          event.url = event.url.replace("2023", "2024");
+          patternEvents.push(event);
+        } else if (
+          event.type === "PATTERN" &&
+          event.url.includes("23") &&
+          event.processed
+        ) {
+          const filter = { url: event.url };
+          const update = {
+            $set: {
+              processed: false,
+            },
+          };
+          await eventListmodel.updateOne(filter, update);
+          event.url = event.url.replace("23", "24");
+          patternEvents.push(event);
+        } else {
+          uniqueEvents.push(event);
+        }
+      })
+    );
 
     finalevents = [...uniqueEvents, ...patternEvents];
     const promises = finalevents.map((event) =>
@@ -133,7 +148,7 @@ const scrapEventData = async () => {
 
     if (!_.isEmpty(newData)) {
       await reportGeneration(newData);
-      await emailSend.sendEmail()
+      await emailSend.sendEmail();
       return { success: true, message: "new data stored successfully" };
     } else {
       return { success: false, message: "no new data found" };
