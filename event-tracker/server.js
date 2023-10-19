@@ -5,7 +5,6 @@ const dbConfig = require("./config/database"); // Import database configuration
 const dbConnection = require('./utils/database.utils');
 const path = require("path");
 
-//ravi changes
 const eventRouter = require("./routes/event.router");
 
 const app = express();
@@ -18,7 +17,6 @@ dbConnection()
 app.use(express.json());
 
 //api
-//ravi changes
 app.use("/api/event", eventRouter);
 
 // Setting up EJS as view engine
