@@ -6,11 +6,11 @@ const { scrapEventData } = require('./services/event.service');
 //   console.log('running a task every second', urls);
 // });
 
-(async () => {
-  console.log("we are inside cron file");
-  let logd = await scrapEventData();
-  console.log(logd);
-})();
+// (async () => {
+//   console.log("we are inside cron file");
+//   let logd = await scrapEventData();
+//   console.log(logd);
+// })();
 
 
 // * * * * * *
