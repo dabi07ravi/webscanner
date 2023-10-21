@@ -68,8 +68,25 @@ const fetchLatestEvents = async () => {
  * @param {Array} notFoundScrappedData
  */
 const handleScrappedData = async (event, newData, notFoundScrappedData) => {
+  let oldUrl = event.url;
+  if (
+    event.type === "PATTERN" &&
+    event.url.includes("2023") &&
+    event.processed
+  ) {
+    event.url = event.url.replace("2023", "2024");
+  }
   const scrappedData = await dataScrapper(event.url, event.fields);
   if (!_.isEmpty(scrappedData)) {
+    if (event.type === "PATTERN") {
+      const filter = { url: oldUrl };
+      const update = {
+        $set: {
+          processed: false,
+        },
+      };
+      await eventListmodel.updateOne(filter, update);
+    }
     if (!_.isEqual(scrappedData, event.scrappedData)) {
       const newEvent = new eventListmodel({
         url: event.url,
@@ -98,49 +115,49 @@ const scrapEventData = async () => {
 
   try {
     let events = await fetchLatestEvents();
-    let patternEvents = [];
-    let uniqueEvents = [];
-    let finalevents = [];
+    // let patternEvents = [];
+    // let uniqueEvents = [];
+    // let finalevents = [];
 
-    // Use Promise.all to await all promises returned by map
-    await Promise.all(
-      events.map(async (event) => {
-        if (
-          event.type === "PATTERN" &&
-          event.url.includes("2023") &&
-          event.processed
-        ) {
-          const filter = { url: event.url };
-          const update = {
-            $set: {
-              processed: false,
-            },
-          };
-          await eventListmodel.updateOne(filter, update);
-          event.url = event.url.replace("2023", "2024");
-          patternEvents.push(event);
-        } else if (
-          event.type === "PATTERN" &&
-          event.url.includes("23") &&
-          event.processed
-        ) {
-          const filter = { url: event.url };
-          const update = {
-            $set: {
-              processed: false,
-            },
-          };
-          await eventListmodel.updateOne(filter, update);
-          event.url = event.url.replace("23", "24");
-          patternEvents.push(event);
-        } else {
-          uniqueEvents.push(event);
-        }
-      })
-    );
+    // // Use Promise.all to await all promises returned by map
+    // await Promise.all(
+    //   events.map(async (event) => {
+    //     if (
+    //       event.type === "PATTERN" &&
+    //       event.url.includes("2023") &&
+    //       event.processed
+    //     ) {
+    //       const filter = { url: event.url };
+    //       const update = {
+    //         $set: {
+    //           processed: false,
+    //         },
+    //       };
+    //       await eventListmodel.updateOne(filter, update);
+    //       event.url = event.url.replace("2023", "2024");
+    //       patternEvents.push(event);
+    //     } else if (
+    //       event.type === "PATTERN" &&
+    //       event.url.includes("23") &&
+    //       event.processed
+    //     ) {
+    //       const filter = { url: event.url };
+    //       const update = {
+    //         $set: {
+    //           processed: false,
+    //         },
+    //       };
+    //       await eventListmodel.updateOne(filter, update);
+    //       event.url = event.url.replace("23", "24");
+    //       patternEvents.push(event);
+    //     } else {
+    //       uniqueEvents.push(event);
+    //     }
+    //   })
+    // );
 
-    finalevents = [...uniqueEvents, ...patternEvents];
-    const promises = finalevents.map((event) =>
+    // finalevents = [...uniqueEvents, ...patternEvents];
+    const promises = events.map((event) =>
       handleScrappedData(event, newData, notFoundScrappedData)
     );
 
